@@ -103,7 +103,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
         <form onSubmit={handleSubmit}>
           <Flex direction="column" gap="3">
             <label>
-              <Text as="div" size="2" mb="1" weight="bold">
+              <Text as="div" size="2" mb="2" weight="bold">
                 Caption
               </Text>
               <TextArea
@@ -112,7 +112,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
               />
             </label>
             <label>
-              <Text as="div" size="2" mb="1" weight="bold">
+              <Text as="div" size="2" mb="2" weight="bold">
                 Image
               </Text>
               <input

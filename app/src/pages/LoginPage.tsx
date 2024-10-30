@@ -7,6 +7,8 @@ import * as yup from "yup";
 import { authService } from "../services/auth.service";
 import useStore from "../store";
 import toast from "react-hot-toast";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { useState } from "react";
 
 interface LoginFormData {
   username: string;
@@ -20,6 +22,7 @@ const schema = yup.object({
 
 const LoginPage = () => {
   const { isAuthenticated, authUser } = useStore();
+  const [showPw, setShowPw] = useState(false);
   //const navigate = useNavigate();
 
   const {
@@ -63,10 +66,25 @@ const LoginPage = () => {
           )}
           <TextField.Root
             {...register("password")}
-            type="password"
+            type={showPw ? "text" : "password"}
             placeholder="Password"
             size="3"
-          />
+            className="relative"
+          >
+            <button
+              className="px-2"
+              style={{ color: "var(--gray-9)" }}
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+            >
+              {!showPw ? (
+                <EyeIcon className="size-5" />
+              ) : (
+                <EyeSlashIcon className="size-5" />
+              )}
+            </button>
+          </TextField.Root>
+
           {errors.password && (
             <Text color="ruby">{errors.password.message}</Text>
           )}

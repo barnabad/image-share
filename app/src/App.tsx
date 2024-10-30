@@ -6,7 +6,7 @@ const App = () => {
   return (
     <>
       <RouterProvider router={router} />
-      <Toaster />
+      <Toaster position="bottom-right" reverseOrder={false} />
     </>
   );
 };

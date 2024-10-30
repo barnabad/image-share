@@ -45,7 +45,7 @@ const HomePage = () => {
         <CreatePostModal isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
+      <div className="mx-auto flex flex-col gap-4">
         {posts?.map((item) => (
           <PostItem
             key={item._id}
