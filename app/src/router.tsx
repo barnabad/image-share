@@ -12,10 +12,10 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
         element: <PersistentAuth />,
         children: [
           {
+            path: "/",
             element: <ProtectedRoute />,
             children: [
               {
@@ -28,11 +28,11 @@ const router = createBrowserRouter([
               },
             ],
           },
+          {
+            path: "/login",
+            element: <LoginPage />,
+          },
         ],
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
       },
       {
         path: "/signup",

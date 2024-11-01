@@ -82,8 +82,8 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     // Create JWTs
-    const accessToken = createAccessToken(user._id.toString(), user.username);
-    const refreshToken = createRefreshToken(user._id.toString(), user.username);
+    const accessToken = createAccessToken(user._id.toString());
+    const refreshToken = createRefreshToken(user._id.toString());
 
     // Store refresh token in database
     user.refreshToken = refreshToken;
@@ -100,7 +100,7 @@ export const loginController = async (req: Request, res: Response) => {
     res.status(200).json({
       message: "Login successful",
       accessToken: accessToken,
-      username: username,
+      _id: user._id.toString(),
     });
   } catch (error) {
     console.error("Error while logging in", error);

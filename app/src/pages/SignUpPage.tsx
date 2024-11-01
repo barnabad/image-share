@@ -33,7 +33,7 @@ const schema = yup.object({
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useStore();
+  const { logoutUser } = useStore();
 
   const {
     handleSubmit,
@@ -45,8 +45,8 @@ const SignUpPage = () => {
     const res = await authService.signup(data);
     if (res?.status === 201) {
       toast.success(res.data.message);
-
-      if (!isAuthenticated) navigate("/login");
+      logoutUser();
+      navigate("/login");
     }
   };
 

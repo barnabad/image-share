@@ -21,9 +21,8 @@ const schema = yup.object({
 });
 
 const LoginPage = () => {
-  const { isAuthenticated, authUser } = useStore();
+  const { accessToken, authUser } = useStore();
   const [showPw, setShowPw] = useState(false);
-  //const navigate = useNavigate();
 
   const {
     register,
@@ -35,7 +34,7 @@ const LoginPage = () => {
     try {
       const res = await authService.login(data);
       if (res?.status === 200) {
-        authUser(res.data.accessToken, res.data.username);
+        authUser(res.data.accessToken, res.data._id);
         toast.success(res.data.message);
       }
     } catch (error) {
@@ -45,7 +44,7 @@ const LoginPage = () => {
   };
 
   // Redirect user to homepage is already logged in
-  if (isAuthenticated) {
+  if (accessToken) {
     return <Navigate to="/" />;
   }
 

@@ -34,9 +34,9 @@ const HomePage = () => {
 
   return (
     <Page className="flex flex-col">
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-4 items-start mb-4">
         <RouterLink
-          className="hover:underline mb-4"
+          className="hover:underline"
           style={{ color: "var(--accent-9)" }}
           to="/profile"
         >

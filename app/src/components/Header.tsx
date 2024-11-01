@@ -5,7 +5,7 @@ import { authService } from "../services/auth.service";
 import toast from "react-hot-toast";
 
 const Header = () => {
-  const { isAuthenticated, logoutUser } = useStore();
+  const { accessToken, logoutUser } = useStore();
 
   const handleLogout = async () => {
     await authService.logout();
@@ -22,14 +22,16 @@ const Header = () => {
         <RouterLink to={"/"}>Image Share</RouterLink>
       </Heading>
       <nav className="flex items-center gap-2">
-        {isAuthenticated && (
+        {accessToken && (
           <>
             {/* <Avatar
               radius="full"
               src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
               fallback="A"
             /> */}
-            <Button onClick={handleLogout}>Logout</Button>
+            <Button className="cursor-pointer" onClick={handleLogout}>
+              Logout
+            </Button>
           </>
         )}
       </nav>

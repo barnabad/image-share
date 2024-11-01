@@ -9,6 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useStore from "../store";
+import { useNavigate } from "react-router-dom";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -21,6 +23,8 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { logoutUser, userId } = useStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -37,7 +41,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
     }
 
     const formData = new FormData();
-    formData.append("ownerId", "67202f40ce0d5e6391417085");
+    formData.append("ownerId", userId as string);
     formData.append("file-upload", file);
 
     if (caption) {
@@ -59,6 +63,8 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
       }
     } catch (error) {
       console.log(error);
+      logoutUser();
+      navigate("/");
     } finally {
       setIsLoading(false);
     }

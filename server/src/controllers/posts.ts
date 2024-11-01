@@ -4,7 +4,7 @@ import { User } from "../models/user.model.js";
 
 export const loadPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).sort({ createdAt: -1 });
     res.status(200).json({ message: "Posts loaded", posts });
   } catch (error) {
     res.status(400).json({ error: "Couldn't load posts" });

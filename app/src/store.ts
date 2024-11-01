@@ -1,27 +1,24 @@
 import { create } from "zustand";
 
 interface State {
-  isAuthenticated: boolean;
   accessToken: string | null;
-  username: string;
+  userId: string | null;
 
-  authUser: (accessToken: string, username: string) => void;
+  authUser: (accessToken: string, userId: string) => void;
   logoutUser: () => void;
   setAccessToken: (token: string) => void;
 }
 
 const useStore = create<State>()((set) => ({
-  isAuthenticated: false,
   accessToken: null,
-  username: "",
+  userId: null,
 
-  authUser: (accessToken: string, username: string) =>
+  authUser: (accessToken: string, userId: string) =>
     set({
-      isAuthenticated: true,
       accessToken: accessToken,
-      username: username,
+      userId: userId,
     }),
-  logoutUser: () => set({ isAuthenticated: false, accessToken: null }),
+  logoutUser: () => set({ accessToken: null, userId: null }),
   setAccessToken: (token: string) => set({ accessToken: token }),
 }));
 

@@ -6,7 +6,7 @@ const useRefreshToken = () => {
 
   const refresh = async () => {
     const res = await axios.get("/refresh");
-    authUser(res.data.accessToken, res.data.username);
+    authUser(res.data.accessToken, res.data._id);
     console.log("Access token refreshed");
     return res.data.accessToken;
   };

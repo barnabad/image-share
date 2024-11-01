@@ -23,18 +23,14 @@ export const refreshController = async (req: Request, res: Response) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET!,
     (err: any, decoded: any) => {
-      if (
-        err ||
-        user._id.toString() !== decoded._id ||
-        user.username !== decoded.username
-      ) {
+      if (err || user._id.toString() !== decoded._id) {
         res.status(403).json({ error: "Invalid refresh token" });
         return;
       }
 
-      const accessToken = createAccessToken(decoded._id, decoded.username);
+      const accessToken = createAccessToken(decoded._id);
 
-      res.json({ accessToken, username: user.username });
+      res.json({ accessToken, _id: user._id });
     }
   );
 };
