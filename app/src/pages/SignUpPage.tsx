@@ -90,7 +90,7 @@ const SignUpPage = () => {
           {errors.confirmPassword && (
             <Text color="ruby">{errors.confirmPassword.message}</Text>
           )}
-          <Button type="submit" size="3">
+          <Button type="submit" size="3" className="cursor-pointer">
             Sign Up
           </Button>
 

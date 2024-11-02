@@ -87,7 +87,7 @@ const LoginPage = () => {
           {errors.password && (
             <Text color="ruby">{errors.password.message}</Text>
           )}
-          <Button type="submit" size="3">
+          <Button type="submit" size="3" className="cursor-pointer">
             Login
           </Button>
 

@@ -3,6 +3,7 @@ interface Post {
   ownerId: string;
   caption: string;
   imageUrl: string;
+  likes?: string[];
   createdAt: Date;
   updatedAt: Date;
 }

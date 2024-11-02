@@ -41,3 +41,36 @@ export const createPost = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Post upload failed" });
   }
 };
+
+export const likePost = async (req: Request, res: Response) => {
+  const postId = req.params.id;
+  const { userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    const hasLiked = post.likes?.includes(userId);
+
+    if (hasLiked) {
+      post.likes = post.likes?.filter(
+        (like) => like.toString() !== userId.toString()
+      );
+    } else {
+      post.likes?.push(userId.toString());
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      message: hasLiked ? "Post unliked" : "Post liked",
+    });
+  } catch (error) {
+    res.status(400).json({ error: "Error liking post" });
+    console.log(error);
+  }
+};

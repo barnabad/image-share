@@ -4,6 +4,7 @@ interface IPost {
   ownerId: mongoose.Types.ObjectId;
   caption?: string;
   imageUrl: string;
+  likes?: string[];
 }
 
 const postSchema = new Schema<IPost>(
@@ -19,6 +20,9 @@ const postSchema = new Schema<IPost>(
     imageUrl: {
       type: String,
       required: true,
+    },
+    likes: {
+      type: [String],
     },
   },
   { timestamps: true }

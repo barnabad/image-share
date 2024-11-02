@@ -1,5 +1,4 @@
 import express from "express";
-import { refreshController } from "../controllers/refresh.js";
 import { getUserById } from "../controllers/users.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 

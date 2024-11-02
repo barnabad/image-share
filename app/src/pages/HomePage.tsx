@@ -49,9 +49,11 @@ const HomePage = () => {
         {posts?.map((item) => (
           <PostItem
             key={item._id}
+            postId={item._id}
             ownerId={item.ownerId}
             caption={item.caption}
             imageUrl={item.imageUrl}
+            likes={item.likes}
             createdAt={item.createdAt}
             updatedAt={item.updatedAt}
           />
