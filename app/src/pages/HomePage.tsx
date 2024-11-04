@@ -2,11 +2,12 @@ import Page from "../components/Page";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import useStore from "../store";
 import PostItem from "../components/PostItem";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Post from "../models/Post";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CreatePostModal from "../components/CreatePostModal";
+import { ChevronUpIcon } from "@heroicons/react/16/solid";
 
 const HomePage = () => {
   const [posts, setPosts] = useState<Post[]>();
@@ -14,23 +15,41 @@ const HomePage = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const { logoutUser } = useStore();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const fetchPosts = useCallback(async () => {
+    try {
+      const res = await axiosPrivate.get("/posts");
+      if (res?.status === 200) {
+        toast.success(res.data.message);
+        setPosts(res.data.posts);
+      }
+    } catch (error) {
+      console.log(error);
+      logoutUser();
+      navigate("/login");
+    }
+  }, [axiosPrivate, logoutUser, navigate]);
 
   useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const res = await axiosPrivate.get("/posts");
-        if (res?.status === 200) {
-          toast.success(res.data.message);
-          setPosts(res.data.posts);
-        }
-      } catch (error) {
-        console.log(error);
-        logoutUser();
-        navigate("/login");
-      }
+    fetchPosts();
+  }, [fetchPosts]);
+
+  useEffect(() => {
+    const toggleShowScrollTop = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else setShowScrollTop(false);
     };
-    loadPosts();
-  }, [logoutUser, navigate, axiosPrivate]);
+
+    window.addEventListener("scroll", toggleShowScrollTop);
+
+    return () => window.removeEventListener("scroll", toggleShowScrollTop);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <Page className="flex flex-col">
@@ -42,7 +61,11 @@ const HomePage = () => {
         >
           Profile Page
         </RouterLink>
-        <CreatePostModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        <CreatePostModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          fetchPosts={fetchPosts}
+        />
       </div>
 
       <div className="mx-auto flex flex-col gap-4">
@@ -59,6 +82,14 @@ const HomePage = () => {
           />
         ))}
       </div>
+      {showScrollTop && (
+        <button className="fixed bottom-4" onClick={scrollToTop}>
+          <ChevronUpIcon
+            className="size-10 md:size-12"
+            style={{ backgroundColor: "var(--accent-9)" }}
+          />
+        </button>
+      )}
     </Page>
   );
 };

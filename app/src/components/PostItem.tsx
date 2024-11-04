@@ -5,7 +5,6 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/16/solid";
 import useStore from "../store";
-import { axiosPrivate } from "../config/axios.config";
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
@@ -26,11 +25,11 @@ const PostItem = ({
   imageUrl,
   likes,
   createdAt,
-  updatedAt,
 }: PostItemProps) => {
   const axiosPrivate = useAxiosPrivate();
   const { userId } = useStore();
   const [username, setUsername] = useState("");
+  const [isLiked, setIsLiked] = useState(likes?.includes(userId as string));
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -48,6 +47,7 @@ const PostItem = ({
     try {
       const res = await axiosPrivate.post(`/posts/like/${postId}`, { userId });
       console.log(res.data.message);
+      setIsLiked(!isLiked);
     } catch (error) {
       console.log(error);
     }
@@ -59,9 +59,7 @@ const PostItem = ({
         <div className="flex justify-between items-center">
           <Text weight={"bold"}>{username}</Text>
           <Text weight={"light"} size={"1"}>
-            {`${createdAt !== updatedAt ? "(edited)" : ""} ${new Date(
-              createdAt
-            ).toLocaleString()}`}
+            {new Date(createdAt).toLocaleString()}
           </Text>
         </div>
         <div className="flex">
@@ -90,7 +88,7 @@ const PostItem = ({
           >
             <HandThumbUpIcon
               className="size-5"
-              fill={likes?.includes(userId as string) ? "white" : "none"}
+              fill={isLiked ? "white" : "none"}
               stroke="white"
             />
             <Text>Like</Text>

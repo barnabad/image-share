@@ -15,9 +15,14 @@ import { useNavigate } from "react-router-dom";
 interface CreatePostModalProps {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
+  fetchPosts: () => void;
 }
 
-const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
+const CreatePostModal = ({
+  isOpen,
+  setIsOpen,
+  fetchPosts,
+}: CreatePostModalProps) => {
   const privateAxios = useAxiosPrivate();
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -59,6 +64,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: CreatePostModalProps) => {
 
       if (res.status === 201) {
         setIsOpen(false);
+        fetchPosts();
         toast.success(res.data.message);
       }
     } catch (error) {

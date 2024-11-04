@@ -1,8 +1,9 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Button, Heading } from "@radix-ui/themes";
+import { Button, Heading, Popover } from "@radix-ui/themes";
 import useStore from "../store";
 import { authService } from "../services/auth.service";
 import toast from "react-hot-toast";
+import { BellIcon } from "@heroicons/react/16/solid";
 
 const Header = () => {
   const { accessToken, logoutUser } = useStore();
@@ -23,16 +24,21 @@ const Header = () => {
       </Heading>
       <nav className="flex items-center gap-2">
         {accessToken && (
-          <>
-            {/* <Avatar
-              radius="full"
-              src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
-              fallback="A"
-            /> */}
+          <div className="flex gap-2">
+            <Popover.Root>
+              <Popover.Trigger>
+                <button className="p-1">
+                  <BellIcon className="size-6" />
+                </button>
+              </Popover.Trigger>
+              <Popover.Content>
+                <p>notifications</p>
+              </Popover.Content>
+            </Popover.Root>
             <Button className="cursor-pointer" onClick={handleLogout}>
               Logout
             </Button>
-          </>
+          </div>
         )}
       </nav>
     </header>
