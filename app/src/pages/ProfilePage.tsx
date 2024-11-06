@@ -1,25 +1,48 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Page from "../components/Page";
 import { Badge, Button, Card, DataList, TextField } from "@radix-ui/themes";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useStore from "../store";
 import { User } from "../models/User";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { PencilSquareIcon } from "@heroicons/react/16/solid";
+import toast from "react-hot-toast";
 
 type EditingModes = "username" | "email" | null;
 
 interface EditFieldProps {
   value: string;
-  type: string; // email or text -> used for validation
+  type: "text" | "email";
+  setEditingMode: (value: EditingModes) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const EditField = ({ value }: EditFieldProps) => {
+const EditField = ({
+  value,
+  type,
+  setEditingMode,
+  onSubmit,
+  onChange,
+}: EditFieldProps) => {
   return (
-    <form className="flex gap-2">
-      <TextField.Root value={value}></TextField.Root>
+    <form className="flex gap-2" onSubmit={onSubmit}>
+      <TextField.Root
+        value={value}
+        type={type}
+        onChange={onChange}
+      ></TextField.Root>
       <Button className="cursor-pointer" type="submit">
         Save
+      </Button>
+      <Button
+        color="gray"
+        variant="soft"
+        className="cursor-pointer"
+        type="button"
+        onClick={() => setEditingMode(null)}
+      >
+        Cancel
       </Button>
     </form>
   );
@@ -32,24 +55,50 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [editingMode, setEditingMode] = useState<EditingModes>(null);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  const fetchUser = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await axiosPrivate.get(`/users/${userId}`);
+      setUser(res.data.user);
+      setUsernameInput(res.data.user.username);
+      setEmailInput(res.data.user.email);
+    } catch (error) {
+      console.log(error);
+      logoutUser();
+      navigate("/login");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [axiosPrivate, logoutUser, navigate, userId]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      setIsLoading(true);
-      try {
-        const res = await axiosPrivate.get(`/users/${userId}`);
-        setUser(res.data.user);
-      } catch (error) {
-        console.log(error);
-        logoutUser();
-        navigate("/login");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchUser();
-  }, [userId, axiosPrivate, logoutUser, navigate]);
+  }, [fetchUser]);
+
+  const updateUsername = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const res = await axiosPrivate.patch("/users/username", {
+        userId,
+        newUsername: usernameInput,
+      });
+      toast.success(res.data.message);
+      setEditingMode(null);
+      fetchUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // update username code goes here
+  };
 
   return (
     <Page>
@@ -84,7 +133,13 @@ const ProfilePage = () => {
                     </button>
                   </>
                 ) : (
-                  <EditField value={user?.username as string} type="text" />
+                  <EditField
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    type="text"
+                    setEditingMode={setEditingMode}
+                    onSubmit={updateUsername}
+                  />
                 )}
               </DataList.Value>
             </DataList.Item>
@@ -99,7 +154,13 @@ const ProfilePage = () => {
                     </button>
                   </>
                 ) : (
-                  <EditField value={user?.email as string} type="text" />
+                  <EditField
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    type="email"
+                    setEditingMode={setEditingMode}
+                    onSubmit={updateEmail}
+                  />
                 )}
               </DataList.Value>
             </DataList.Item>
