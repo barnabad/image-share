@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useStore from "../store";
+import { useSelector } from "react-redux";
+import { selectAccessToken } from "../store/authSlice";
 
 const ProtectedRoute = () => {
-  const { accessToken } = useStore();
+  const accessToken = useSelector(selectAccessToken);
 
   return accessToken ? <Outlet /> : <Navigate to="/login" />;
 };

@@ -6,7 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { authService } from "../services/auth.service";
 import toast from "react-hot-toast";
-import useStore from "../store";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../store/authSlice";
 
 interface SignUpFormData {
   email: string;
@@ -33,7 +34,7 @@ const schema = yup.object({
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { logoutUser } = useStore();
+  const dispatch = useDispatch();
 
   const {
     handleSubmit,
@@ -45,7 +46,7 @@ const SignUpPage = () => {
     const res = await authService.signup(data);
     if (res?.status === 201) {
       toast.success(res.data.message);
-      logoutUser();
+      dispatch(logoutUser());
       navigate("/login");
     }
   };

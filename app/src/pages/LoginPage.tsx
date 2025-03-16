@@ -5,10 +5,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { authService } from "../services/auth.service";
-import useStore from "../store";
 import toast from "react-hot-toast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, selectAccessToken } from "../store/authSlice";
 
 interface LoginFormData {
   username: string;
@@ -21,7 +22,8 @@ const schema = yup.object({
 });
 
 const LoginPage = () => {
-  const { accessToken, authUser } = useStore();
+  const accessToken = useSelector(selectAccessToken);
+  const dispatch = useDispatch();
   const [showPw, setShowPw] = useState(false);
 
   const {
@@ -34,7 +36,9 @@ const LoginPage = () => {
     try {
       const res = await authService.login(data);
       if (res?.status === 200) {
-        authUser(res.data.accessToken, res.data._id);
+        dispatch(
+          loginUser({ accessToken: res.data.accessToken, userId: res.data._id })
+        );
         toast.success(res.data.message);
       }
     } catch (error) {

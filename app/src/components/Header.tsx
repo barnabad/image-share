@@ -1,16 +1,18 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Button, Heading, Popover } from "@radix-ui/themes";
-import useStore from "../store";
 import { authService } from "../services/auth.service";
 import toast from "react-hot-toast";
 import { BellIcon } from "@heroicons/react/16/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser, selectAccessToken } from "../store/authSlice";
 
 const Header = () => {
-  const { accessToken, logoutUser } = useStore();
+  const accessToken = useSelector(selectAccessToken);
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     await authService.logout();
-    logoutUser();
+    dispatch(logoutUser());
     toast.success("Logout successful");
   };
 

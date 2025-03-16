@@ -8,13 +8,15 @@ import Post from "../models/Post";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CreatePostModal from "../components/CreatePostModal";
 import { ChevronUpIcon } from "@heroicons/react/16/solid";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../store/authSlice";
 
 const HomePage = () => {
   const [posts, setPosts] = useState<Post[]>();
   const [isOpen, setIsOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-  const { logoutUser } = useStore();
+  const dispatch = useDispatch();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const fetchPosts = useCallback(async () => {
@@ -26,10 +28,10 @@ const HomePage = () => {
       }
     } catch (error) {
       console.log(error);
-      logoutUser();
+      dispatch(logoutUser());
       navigate("/login");
     }
-  }, [axiosPrivate, logoutUser, navigate]);
+  }, [axiosPrivate, dispatch, navigate]);
 
   useEffect(() => {
     fetchPosts();

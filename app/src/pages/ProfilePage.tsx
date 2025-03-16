@@ -2,12 +2,13 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Page from "../components/Page";
 import { Badge, Button, Card, DataList, TextField } from "@radix-ui/themes";
 import React, { useCallback, useEffect, useState } from "react";
-import useStore from "../store";
 import { User } from "../models/User";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { PencilSquareIcon } from "@heroicons/react/16/solid";
 import toast from "react-hot-toast";
 import ChangePasswordModal from "../components/ChangePasswordModal";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser, selectUserId } from "../store/authSlice";
 
 type EditingModes = "username" | "email" | null;
 
@@ -51,9 +52,10 @@ const EditField = ({
 
 const ProfilePage = () => {
   const axiosPrivate = useAxiosPrivate();
-  const { userId, logoutUser } = useStore();
+  const userId = useSelector(selectUserId);
   const [user, setUser] = useState<User>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [editingMode, setEditingMode] = useState<EditingModes>(null);
   const [usernameInput, setUsernameInput] = useState("");
@@ -68,12 +70,12 @@ const ProfilePage = () => {
       setEmailInput(res.data.user.email);
     } catch (error) {
       console.log(error);
-      logoutUser();
+      dispatch(logoutUser());
       navigate("/login");
     } finally {
       setIsLoading(false);
     }
-  }, [axiosPrivate, logoutUser, navigate, userId]);
+  }, [axiosPrivate, dispatch, navigate, userId]);
 
   useEffect(() => {
     fetchUser();
