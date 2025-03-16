@@ -7,6 +7,7 @@ import { User } from "../models/User";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { PencilSquareIcon } from "@heroicons/react/16/solid";
 import toast from "react-hot-toast";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 
 type EditingModes = "username" | "email" | null;
 
@@ -97,7 +98,17 @@ const ProfilePage = () => {
   const updateEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // update username code goes here
+    try {
+      const res = await axiosPrivate.patch("/users/email", {
+        userId,
+        newEmail: emailInput,
+      });
+      toast.success(res.data.message);
+      setEditingMode(null);
+      fetchUser();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -167,12 +178,7 @@ const ProfilePage = () => {
             <DataList.Item>
               <DataList.Label>Change Password</DataList.Label>
               <DataList.Value>
-                <button
-                  className="hover:underline"
-                  style={{ color: "var(--accent-9)" }}
-                >
-                  Change
-                </button>
+                <ChangePasswordModal />
               </DataList.Value>
             </DataList.Item>
           </DataList.Root>
